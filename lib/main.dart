@@ -20,7 +20,10 @@ import 'screens/profile_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp();
+
   runApp(const LuminaApp());
 }
 
@@ -45,7 +48,7 @@ class LuminaApp extends StatelessWidget {
             seedColor: const Color(0xFF6B73FF),
             brightness: Brightness.light,
           ),
-          fontFamily: 'Inter',
+          // fontFamily: 'Inter', // Commented out for now
         ),
         darkTheme: ThemeData(
           useMaterial3: true,
@@ -53,7 +56,7 @@ class LuminaApp extends StatelessWidget {
             seedColor: const Color(0xFF6B73FF),
             brightness: Brightness.dark,
           ),
-          fontFamily: 'Inter',
+          // fontFamily: 'Inter', // Commented out for now
         ),
         home: const SplashScreen(),
         routes: {

@@ -4,14 +4,14 @@ import '../providers/ai_service_provider.dart';
 import '../models/chat_message.dart';
 import '../widgets/chat_bubble.dart';
 
-class AITherapistScreen extends StatefulWidget {
-  const AITherapistScreen({super.key});
+class AICompanionScreen extends StatefulWidget {
+  const AICompanionScreen({super.key});
 
   @override
-  State<AITherapistScreen> createState() => _AITherapistScreenState();
+  State<AICompanionScreen> createState() => _AICompanionScreenState();
 }
 
-class _AITherapistScreenState extends State<AITherapistScreen> {
+class _AICompanionScreenState extends State<AICompanionScreen> {
   final List<ChatMessage> _messages = [];
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
@@ -20,7 +20,7 @@ class _AITherapistScreenState extends State<AITherapistScreen> {
   void initState() {
     super.initState();
     _addMessage(ChatMessage(
-      text: "Hello! I'm Lumina AI, your mental health companion. I'm here to provide support and listen to you. Please remember that while I can offer guidance and coping strategies, I'm not a replacement for professional therapy. How are you feeling today?",
+      text: "Hi there! I'm your AI companion. I'm here to listen, chat, and provide emotional support whenever you need it. What's on your mind today?",
       isUser: false,
       timestamp: DateTime.now(),
     ));
@@ -37,40 +37,13 @@ class _AITherapistScreenState extends State<AITherapistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Therapist'),
+        title: const Text('AI Companion'),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () => _showDisclaimerDialog(),
-            icon: const Icon(Icons.info_outline),
-          ),
-        ],
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 16,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'This is not a substitute for professional medical advice',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
@@ -99,7 +72,7 @@ class _AITherapistScreenState extends State<AITherapistScreen> {
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
-                      hintText: 'Type your message...',
+                      hintText: 'Share your thoughts...',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
@@ -166,30 +139,12 @@ class _AITherapistScreenState extends State<AITherapistScreen> {
     ));
 
     final aiService = context.read<AIServiceProvider>();
-    final response = await aiService.getChatResponse(text, 'therapist');
+    final response = await aiService.getChatResponse(text, 'companion');
 
     _addMessage(ChatMessage(
       text: response,
       isUser: false,
       timestamp: DateTime.now(),
     ));
-  }
-
-  void _showDisclaimerDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Important Disclaimer'),
-        content: const Text(
-          'Lumina AI is designed to provide support and guidance, but it is not a substitute for professional medical advice, diagnosis, or treatment. If you are experiencing a mental health crisis or having thoughts of self-harm, please contact a mental health professional or emergency services immediately.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('I Understand'),
-          ),
-        ],
-      ),
-    );
   }
 }
