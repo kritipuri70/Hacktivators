@@ -1,0 +1,61 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "lumina-391d8",
+          "appId": "1:395769118596:android:b0cd27461879caed0ee7d1",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "lumina-391d8",
+          "configurations": {
+            "android": "1:395769118596:android:b0cd27461879caed0ee7d1",
+            "ios": "1:395769118596:ios:52e1b293d8207b360ee7d1",
+            "macos": "1:395769118596:ios:52e1b293d8207b360ee7d1",
+            "web": "1:395769118596:web:3324a8658f81d2500ee7d1",
+            "windows": "1:395769118596:web:34e8e0f1814a26900ee7d1"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "nam5",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    },
+    {
+      "source": "lumina",
+      "codebase": "lumina",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}

@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'providers/auth_provider.dart';
-import 'providers/therapist_provider.dart';
-import 'providers/ai_service_provider.dart';
-import 'providers/user_profile_provider.dart';
+import 'core/theme/app_theme.dart';
+import 'services/auth_service.dart';
+import 'services/firestore_service.dart';
+import 'services/notification_service.dart';
 import 'screens/splash_screen.dart';
-import 'screens/auth_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/therapist_signup_screen.dart';
-import 'screens/therapist_directory_screen.dart';
-import 'screens/ai_therapist_screen.dart';
-import 'screens/ai_companion_screen.dart';
-import 'screens/meditation_screen.dart';
-import 'screens/affirmations_screen.dart';
-import 'screens/suggestions_screen.dart';
-import 'screens/profile_screen.dart';
+import 'firebase_options.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+
+// Firebase background message handler
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message: ${message.messageId}');
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // Initialize Firebase
-  await Firebase.initializeApp();
+  // Initialize Firebase Messaging
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(const LuminaApp());
 }
@@ -34,43 +36,15 @@ class LuminaApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => TherapistProvider()),
-        ChangeNotifierProvider(create: (_) => AIServiceProvider()),
-        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => FirestoreService()),
+        ChangeNotifierProvider(create: (_) => NotificationService()),
       ],
       child: MaterialApp(
         title: 'Lumina',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF6B73FF),
-            brightness: Brightness.light,
-          ),
-          // fontFamily: 'Inter', // Commented out for now
-        ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF6B73FF),
-            brightness: Brightness.dark,
-          ),
-          // fontFamily: 'Inter', // Commented out for now
-        ),
+        theme: AppTheme.lightTheme,
         home: const SplashScreen(),
-        routes: {
-          '/auth': (context) => const AuthScreen(),
-          '/home': (context) => const HomeScreen(),
-          '/therapist-signup': (context) => const TherapistSignupScreen(),
-          '/therapist-directory': (context) => const TherapistDirectoryScreen(),
-          '/ai-therapist': (context) => const AITherapistScreen(),
-          '/ai-companion': (context) => const AICompanionScreen(),
-          '/meditation': (context) => const MeditationScreen(),
-          '/affirmations': (context) => const AffirmationsScreen(),
-          '/suggestions': (context) => const SuggestionsScreen(),
-          '/profile': (context) => const ProfileScreen(),
-        },
       ),
     );
   }

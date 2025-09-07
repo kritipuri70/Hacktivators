@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "lumina_ai" "\0"
+            VALUE "FileDescription", "lumina" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "lumina_ai" "\0"
+            VALUE "InternalName", "lumina" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "lumina_ai.exe" "\0"
-            VALUE "ProductName", "lumina_ai" "\0"
+            VALUE "OriginalFilename", "lumina.exe" "\0"
+            VALUE "ProductName", "lumina" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,6 +1,6 @@
 {
-    "name": "lumina_ai",
-    "short_name": "lumina_ai",
+    "name": "lumina",
+    "short_name": "lumina",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

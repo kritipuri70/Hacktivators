@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read/write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Therapists collection is readable by authenticated users
+    match /therapists/{document} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == document;
+    }
+    
+    // Bookings are private to users and therapists involved
+    match /bookings/{document} {
+      allow read, write: if request.auth != null && 
+        (request.auth.uid == resource.data.userId || 
+         request.auth.uid == resource.data.therapistId);
+    }
+    
+    // Anonymous posts are readable by all authenticated users
+    match /anonymous_posts/{document} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        request.auth.uid != null;
+    }
+  }
+}
+   

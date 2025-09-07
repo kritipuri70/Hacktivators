@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
+
+import '../core/theme/app_theme.dart';
+import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
+import '../services/notification_service.dart';
+import 'auth/login_screen.dart';
+import 'home/main_navigation.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,66 +20,168 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToHome();
+    _initializeApp();
   }
 
-  _navigateToHome() async {
+  Future<void> _initializeApp() async {
+    // Initialize services
+    final notificationService = context.read<NotificationService>();
+    final firestoreService = context.read<FirestoreService>();
+
+    await notificationService.initialize();
+    await firestoreService.initializeDummyData();
+    await firestoreService.fetchTherapists();
+    await firestoreService.fetchAnonymousPosts();
+
+    // Wait for minimum splash duration
     await Future.delayed(const Duration(seconds: 3));
+
     if (mounted) {
-      Navigator.pushReplacementNamed(context, '/auth');
+      final authService = context.read<AuthService>();
+
+      // Navigate based on authentication status
+      if (authService.currentUser != null) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const MainNavigation()),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppTheme.primaryGradient,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo Container
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.psychology_rounded,
+                  size: 60,
+                  color: AppTheme.primaryBlue,
+                ),
+              )
+                  .animate()
+                  .scale(
+                delay: const Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.elasticOut,
+              )
+                  .fadeIn(duration: const Duration(milliseconds: 600)),
+
+              const SizedBox(height: 40),
+
+              // App Name
+              const Text(
+                'Lumina',
+                style: TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: 1.5,
+                ),
+              )
+                  .animate()
+                  .fadeIn(
+                delay: const Duration(milliseconds: 800),
+                duration: const Duration(milliseconds: 600),
+              )
+                  .slideY(
+                begin: 0.3,
+                end: 0,
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeOut,
               ),
-              child: const Icon(
-                Icons.psychology,
-                size: 60,
-                color: Color(0xFF6B73FF),
+
+              const SizedBox(height: 16),
+
+              // Tagline
+              const Text(
+                'Your mental wellness journey starts here',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white70,
+                  letterSpacing: 0.5,
+                ),
+                textAlign: TextAlign.center,
+              )
+                  .animate()
+                  .fadeIn(
+                delay: const Duration(milliseconds: 1200),
+                duration: const Duration(milliseconds: 600),
+              )
+                  .slideY(
+                begin: 0.2,
+                end: 0,
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeOut,
               ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Lumina',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+
+              const SizedBox(height: 80),
+
+              // Loading Indicator
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  strokeWidth: 3,
+                ),
+              )
+                  .animate(onPlay: (controller) => controller.repeat())
+                  .fadeIn(
+                delay: const Duration(milliseconds: 1600),
+                duration: const Duration(milliseconds: 400),
+              )
+                  .scale(
+                delay: const Duration(milliseconds: 1600),
+                duration: const Duration(milliseconds: 400),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Your AI Mental Health Companion',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
+
+              const SizedBox(height: 24),
+
+              // Loading Text
+              const Text(
+                'Setting up your wellness space...',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white60,
+                ),
+              )
+                  .animate()
+                  .fadeIn(
+                delay: const Duration(milliseconds: 2000),
+                duration: const Duration(milliseconds: 400),
               ),
-            ),
-            const SizedBox(height: 40),
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
